@@ -13,7 +13,7 @@
 
 ```bash
 .venv/bin/python -m pytest -q                 # 정상 테스트: 통과해야 한다
-.venv/bin/python -m pytest -q docs/verify_bugs.py   # 버그 확인용: 3개가 실패해야 정상(= 버그가 살아 있음)
+.venv/bin/python -m pytest -q docs/verify_bugs.py   # 버그 확인용: 4개가 실패해야 정상(= 버그가 살아 있음)
 ```
 
 `docs/verify_bugs.py` 는 「고쳐졌다면 통과할」 기대 동작을 적은 것이다. 지금은 실패 = 버그 존재.

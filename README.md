@@ -1,8 +1,11 @@
 # techday-agent-teams-demo
 
-Claude Code Agent Teams 녹화용 작은 예제. 할 일(Todo) Flask 앱에 **버그 3개를 일부러 심어 두었다**(보안·성능·테스트). 읽기 전용 리뷰어 3명이 각자 렌즈로 찾는 장면을 찍는 용도다. 실서비스 코드가 아니다.
+Claude Code **Agent Teams** 데모 저장소. 할 일(Todo) Flask 앱에 **버그 3개를 일부러 심어 두었고**(보안·성능·테스트), 읽기 전용 리뷰어 3명이 각자 렌즈로 그 버그를 찾고 서로의 지적을 교차 검토하는 장면을 보여 준다. 실서비스 코드가 아니다.
 
-> 이 저장소의 `.claude/settings.json` 은 `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` 을 켠다. 받아서 쓰면 이 폴더에서 팀 기능이 켜진다(실험 기능, 토큰을 많이 쓴다).
+- Agent Teams 는 **실험 기능**이라 `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` 이 필요하다. Sonnet 5.5 에서는 팀원이 작업 목록 도구를 쓰도록 `CLAUDE_CODE_ENABLE_TODO_TOOLS=1` 도 필요하다. 둘 다 이 저장소의 `.claude/settings.json` 에 이미 들어 있어 이 폴더에서 `claude` 를 열면 켜진다(토큰을 많이 쓴다).
+- 녹화·시연 때는 개인 설정이 섞이지 않게 `claude --setting-sources project,local` 로 여는 것을 권장한다.
+- 정답지 `docs/ANSWER_KEY.md` 는 **발표 뒤에 보기**(교육용으로 공개).
+- 라이선스: MIT (`LICENSE`).
 
 ## 준비
 
@@ -19,7 +22,7 @@ brew install jq             # 훅 스크립트가 쓴다
 |---|---|
 | `app/` | Flask 앱 (`routes.py` 에 버그 3개) |
 | `tests/` | 정상 기능 테스트 (통과) |
-| `.claude/agents/` | 리뷰어 정의 3개 (`security-reviewer` · `perf-reviewer` · `test-reviewer`, 읽기 도구 + `Write`, sonnet) |
+| `.claude/agents/` | 리뷰어 정의 3개 (`security-reviewer` · `perf-reviewer` · `test-reviewer`, 읽기 도구 + `Write` + 작업 목록·메시지 도구, sonnet) |
 | `.claude/settings.json` | 팀 기능 환경변수, 허용 목록, `TaskCompleted` 훅 |
 | `.claude/hooks/require-report.sh` | `review/<팀원 이름>.md` 가 비어 있으면 완료를 막는다(exit 2) |
 | `review/` | 리뷰어 결과가 쌓이는 폴더 (`*.md` 는 git 무시) |
@@ -38,7 +41,7 @@ brew install jq             # 훅 스크립트가 쓴다
 ## 리더에게 붙여 넣을 프롬프트
 
 ```text
-이 저장소를 리뷰할 팀을 만들어. 팀원 3명을 Sonnet으로 띄워: 이름 security 는 security-reviewer 타입, perf 는 perf-reviewer 타입, tests 는 test-reviewer 타입. 각자 자기 렌즈만 보고 review/<이름>.md 에 결과를 써. 서로의 지적에서 틀린 게 보이면 직접 반박해. 리더는 직접 리뷰하지 말고 셋이 끝날 때까지 기다린 다음, 겹치는 지적을 합쳐 심각한 순서로 5줄 요약해. 끝나면 팀원 셋 다 종료시켜.
+이 저장소를 리뷰할 팀을 만들어. 팀원 3명을 Sonnet으로 띄워(팀원 이름은 아래 영문 이름 그대로 — 결과 파일명과 훅이 이 이름을 쓴다): 이름 security 는 security-reviewer 타입, perf 는 perf-reviewer 타입, tests 는 test-reviewer 타입. 각자 자기 렌즈만 보고 review/<이름>.md 에 결과를 써. 결과를 쓴 뒤에는 다른 팀원의 review/<이름>.md 를 읽고 틀린 지적이 있으면 그 팀원에게 메시지로 직접 반박해. 시연용으로 tests 는 결과 파일을 쓰기 전에 먼저 자기 작업을 완료로 표시해 봐(훅이 막으면 그 안내대로 파일을 쓰고 다시 완료해). 리더는 직접 리뷰하지 말고 셋이 끝날 때까지 기다린 다음, 겹치는 지적을 합쳐 심각한 순서로 5줄 요약해. 끝나면 팀원 셋 다 종료시켜.
 ```
 
 ## 초기화
@@ -53,4 +56,3 @@ git reset --hard <첫 커밋>             # 첫 커밋 상태로 완전히 되�
 
 - 리뷰어는 `Edit` 이 없고 `Write` 는 `review/**` 만 자동 허용이다. 그 밖에 쓰려 하면 리더 화면에 확인 창이 뜬다(촬영 중 뜨면 거절).
 - `permissions.deny` 로 `docs/` 읽기를 막았지만 Grep 까지 완전히 막지는 못한다. 정답지를 다른 곳에 옮겨 찍고 싶으면 `docs/` 를 저장소 밖으로 빼도 된다.
-- 이 폴더는 로컬 전용이다. 공개 전에 발표자가 한 번 더 확인한다.

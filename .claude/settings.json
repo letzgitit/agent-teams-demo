@@ -1,5 +1,5 @@
 {
-  "env": { "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1" },
+  "env": { "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1", "CLAUDE_CODE_ENABLE_TODO_TOOLS": "1" },
   "permissions": {
     "allow": ["Read", "Grep", "Glob", "Edit(review/**)"],
     "deny": ["Read(./docs/**)"]
